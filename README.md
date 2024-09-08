@@ -16,6 +16,10 @@ See [Vite Configuration Reference](https://vitejs.dev/config/).
 bun install
 ```
 
+```sh
+cp .example.env .env
+```
+
 ### Compile and Hot-Reload for Development
 
 ```sh

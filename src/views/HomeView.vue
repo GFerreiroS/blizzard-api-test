@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { fetchToken } from '@/tokenService' // Import the function from tokenService.js
+import { fetchToken } from '@/tokenService'
 
 export default {
   name: 'App',
@@ -17,7 +17,7 @@ export default {
   },
   async mounted() {
     try {
-      this.token = await fetchToken() // Call the fetchToken function
+      this.token = await fetchToken()
       console.log('Token retrieved:', this.token)
     } catch (error) {
       console.error('Error retrieving token:', error)

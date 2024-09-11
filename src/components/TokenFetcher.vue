@@ -9,30 +9,66 @@ import axios from 'axios'
 
 export default {
   name: 'TokenFetcher',
+  data() {
+    return {
+      tokenCache: {
+        token: null,
+        expiresAt: null
+      }
+    }
+  },
   methods: {
     async fetchToken() {
       try {
-        const clientId = 'b913ce55b7db4d78b4861531a264c678' // Replace with your actual client ID
-        const clientSecret = 'kbibu6k8H12JoBSQAtK0eRf4iiieMIYx' // Replace with your actual client secret
+        const clientId = import.meta.env.VITE_APP_CLIENT_ID // Ensure these are set correctly
+        const clientSecret = import.meta.env.VITE_APP_CLIENT_SECRET // Ensure these are set correctly
         const tokenUrl = 'https://oauth.battle.net/token'
+        const TOKEN_LIFETIME_MS = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
 
+        const encodedCredentials = btoa(`${clientId}:${clientSecret}`)
+        console.log(encodedCredentials)
+        console.log(clientId)
+        console.log(clientSecret)
         const response = await axios.post(
           tokenUrl,
           new URLSearchParams({ grant_type: 'client_credentials' }), // Form data for the request
           {
-            auth: {
-              username: clientId,
-              password: clientSecret
-            },
             headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
+              'Content-Type': 'application/x-www-form-urlencoded',
+              Authorization: `Basic ${encodedCredentials}` // Correct way to include Basic Auth
             }
           }
         )
 
-        return response.data.access_token // Return the token
+        const token = response.data.access_token
+        const expiresAt = Date.now() + TOKEN_LIFETIME_MS // Set token expiration time
+
+        // Cache the token and its expiration time
+        this.tokenCache = {
+          token,
+          expiresAt
+        }
+
+        return token // Return the new token
       } catch (error) {
         console.error('Error retrieving token:', error)
+        throw error // Rethrow error for handling in parent component
+      }
+    },
+
+    async fetchGuildRoster(realmSlug, guildName) {
+      try {
+        const token = await this.fetchToken() // Get the token using the fetchToken method
+        const apiUrl = `https://eu.api.blizzard.com/data/wow/guild/${realmSlug}/${guildName}/roster?namespace=profile-eu&locale=en_US`
+
+        const response = await axios.get(apiUrl, {
+          headers: {
+            Authorization: `Bearer ${token}` // Use the token for authorization
+          }
+        })
+        return response.data // Return the guild roster data
+      } catch (error) {
+        console.error('Error retrieving guild roster:', error)
         throw error // Rethrow error for handling in parent component
       }
     }

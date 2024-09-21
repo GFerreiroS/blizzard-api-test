@@ -1,5 +1,39 @@
 <template>
-  <div class="home-view"></div>
+  <div class="home-view">
+    <h1>Fetch Guild Roster</h1>
+    <form @submit.prevent="fetchRoster">
+      <div>
+        <label for="realmSlug">Realm Slug:</label>
+        <input
+          type="text"
+          v-model="realmSlug"
+          id="realmSlug"
+          placeholder="Enter Realm Slug"
+          required
+        />
+      </div>
+      <div>
+        <label for="guildName">Guild Name:</label>
+        <input
+          type="text"
+          v-model="guildName"
+          id="guildName"
+          placeholder="Enter Guild Name"
+          required
+        />
+      </div>
+      <button type="submit">Fetch Guild Roster</button>
+    </form>
+
+    <!-- Display fetched guild roster if available -->
+    <div v-if="guildRoster">
+      <h2>Guild Roster:</h2>
+      <pre>{{ guildRoster }}</pre>
+    </div>
+
+    <!-- Include the TokenFetcher component -->
+    <TokenFetcher ref="tokenFetcher" />
+  </div>
 </template>
 
 <script>

@@ -1,26 +1,13 @@
 <template>
   <div class="home-view">
-    <h1>Fetch Guild Roster</h1>
     <form @submit.prevent="fetchRoster">
       <div>
-        <label for="realmSlug">Realm Slug:</label>
-        <input
-          type="text"
-          v-model="realmSlug"
-          id="realmSlug"
-          placeholder="Enter Realm Slug"
-          required
-        />
+        <label for="realmSlug">Realm:</label>
+        <input type="text" v-model="realmSlug" id="realmSlug" required />
       </div>
       <div>
         <label for="guildName">Guild Name:</label>
-        <input
-          type="text"
-          v-model="guildName"
-          id="guildName"
-          placeholder="Enter Guild Name"
-          required
-        />
+        <input type="text" v-model="guildName" id="guildName" required />
       </div>
       <button type="submit">Fetch Guild Roster</button>
     </form>
@@ -37,26 +24,34 @@
 </template>
 
 <script>
-import TokenFetcher from '@/components/TokenFetcher.vue' // Import the TokenFetcher component
+import TokenFetcher from '@/components/TokenFetcher.vue'
+import { useGuildStore } from '@/stores/guildStore'
 
 export default {
   name: 'HomeView',
   components: {
-    TokenFetcher // Register the component
+    TokenFetcher
   },
-  data() {
+  setup() {
+    const guildStore = useGuildStore()
+
     return {
-      realmSlug: '', // To store the user input for realm slug
-      guildName: '', // To store the user input for guild name
-      guildRoster: null // To store the fetched guild roster data
+      realmSlug: guildStore.realmSlug,
+      guildName: guildStore.guildName,
+      setRealmSlug: guildStore.setRealmSlug,
+      setGuildName: guildStore.setGuildName
     }
   },
   methods: {
     async fetchRoster() {
       try {
-        const tokenFetcher = this.$refs.tokenFetcher // Access the TokenFetcher component instance
+        const tokenFetcher = this.$refs.tokenFetcher
 
-        // Fetch guild roster using user input
+        // Update store with the user input
+        this.setRealmSlug(this.realmSlug)
+        this.setGuildName(this.guildName)
+
+        // Fetch guild roster
         this.guildRoster = await tokenFetcher.fetchGuildRoster(this.realmSlug, this.guildName)
         console.log('Guild Roster retrieved:', this.guildRoster)
       } catch (error) {

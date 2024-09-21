@@ -26,9 +26,6 @@ export default {
         const TOKEN_LIFETIME_MS = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
 
         const encodedCredentials = btoa(`${clientId}:${clientSecret}`)
-        console.log(encodedCredentials)
-        console.log(clientId)
-        console.log(clientSecret)
         const response = await axios.post(
           tokenUrl,
           new URLSearchParams({ grant_type: 'client_credentials' }), // Form data for the request

@@ -1,13 +1,14 @@
 <template>
   <div class="home-view">
+    <h1 class="text-4xl text-white">Configuration</h1>
     <form @submit.prevent="fetchRoster">
       <div>
-        <label for="realmSlug">Realm:</label>
-        <input type="text" v-model="realmSlug" id="realmSlug" required />
+        <label for="guildName">Guild Name:</label>
+        <input class="text-black" type="text" v-model="guildName" id="guildName" required />
       </div>
       <div>
-        <label for="guildName">Guild Name:</label>
-        <input type="text" v-model="guildName" id="guildName" required />
+        <label for="realmSlug">Realm:</label>
+        <input class="text-black" type="text" v-model="realmSlug" id="realmSlug" required />
       </div>
       <button type="submit">Fetch Guild Roster</button>
     </form>
